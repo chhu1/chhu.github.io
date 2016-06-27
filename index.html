@@ -37,6 +37,8 @@
     myCity.get(myFun);
     navigator.geolocation.getCurrentPosition(function(position) {
         alert(JSON.stringify(position));
+    }, function(error) {
+        alert(error.message);
     })
 </script>
 </body>
