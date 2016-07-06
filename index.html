@@ -38,6 +38,7 @@
                             noncestr: 'Wm3WZYTPz0wzccnW',
                             signature: '1fa103838d6fd779bc44e015de36080630578625'
                         };
+                    alert(config.signature);
                     self.wx_config(config.appid, config.timestamp, config.noncestr, config.signature, jsApiList);
                     wx.ready(function() {
                         self.wx_shareTimeline(title, link, imgUrl);
