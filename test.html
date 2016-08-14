@@ -137,21 +137,21 @@ window.App = {
                 geolocation.getLocation(function(position) {
                     self.lng = position.lng;
                     self.lat = position.lat;
-                    self.fetchData();
+                    alert(position);
                 }, function() {
-                    self.fetchData();
+                    alert('QQ定位失败');
                 }, { timeout: 15000 });
             } else {
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(function(position) {
                         self.lng = position.coords.longitude;
                         self.lat = position.coords.latitude;
-                        self.fetchData();
+                        alert(position);
                     }, function(error) {
-                        self.fetchData();
+                        alert(error);
                     });
                 } else {
-                    self.fetchData();
+                    alert('不支持定位');
                 }
             }
         }
