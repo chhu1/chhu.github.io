@@ -82,7 +82,7 @@ window.App = {
         var self = this;
         $.ajax({
             type: 'get',
-            url: 'https://api.map.baidu.com/location/ip?v=2.0&ak=Q0O9mkEqXfiLRRfVLUl7sHDZ&coor=bd09ll&s=1',
+            url: 'https://sapi.map.baidu.com/location/ip?v=2.0&ak=Q0O9mkEqXfiLRRfVLUl7sHDZ&coor=bd09ll',
             dataType: 'jsonp',
             success: function(data) {
                 self.getPositionBaiduSuccess(data.content);
