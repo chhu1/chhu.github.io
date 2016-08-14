@@ -23,6 +23,149 @@
     </div>
     <script type="text/javascript" src="https://s.56qq.com/staticBase/dist/20160622/js/lib/zeptoLib.js"></script>
     <script type="text/javascript">
+    function ininQQMap() {
+    window.qq = window.qq || {};
+    qq.maps = qq.maps || {};
+    window.soso || (window.soso = qq);
+    soso.maps || (soso.maps = qq.maps);
+
+    qq.maps.Geolocation = (function() {
+        'use strict';
+        var getCallback = null,
+            getErrCallback = null,
+            geoIframeId = '_geoIframe_' + Math.ceil(Math.random() * 10000000),
+            geoIframe = document.createElement('iframe'),
+            timeout = null,
+            _timer = null;
+        var Geolocation = function(key, referer) {
+            geoIframe.setAttribute('id', geoIframeId);
+            geoIframe.setAttribute('src', 'http://apis.map.qq.com/tools/geolocation?key=' + key + '&referer=' + referer + '_js');
+            geoIframe.setAttribute('style', 'display: none; width: 100%; height: 30%');
+            document.body.appendChild(geoIframe);
+            window.addEventListener('message', function(event) {
+                var loc = event.data;
+                if (loc && loc.module == 'geolocation') {
+                    clearTimeout(_timer);
+                    getCallback && getCallback(loc);
+                    getCallback = null;
+                    getErrCallback = null;
+                } else {
+                    getErrCallback && getErrCallback();
+                    getErrCallback = null;
+                    getCallback = null;
+                    clearTimeout(_timer);
+                }
+            }, false);
+        };
+
+        Geolocation.prototype.getLocation = function(sucCallback, errCallback, options) {
+            getCallback = sucCallback;
+            getErrCallback = errCallback;
+            timeout = (options && options.timeout) ? options.timeout : 10000;
+            clearTimeout(_timer);
+            _timer = setTimeout(function() {
+                getErrCallback && getErrCallback();
+                getErrCallback = null;
+            }, timeout);
+            document.getElementById(geoIframeId).contentWindow.postMessage('getLocation', '*');
+        };
+        return Geolocation;
+    })();
+}
+window.App = {
+    lng: '',
+    lat: '',
+    init: function() {
+        this.getPosition();
+    },
+    getPositionBaidu: function() {
+        var self = this;
+        $.ajax({
+            type: 'get',
+            url: 'http://api.map.baidu.com/location/ip?v=2.0&ak=Q0O9mkEqXfiLRRfVLUl7sHDZ&coor=bd09ll',
+            dataType: 'jsonp',
+            success: function(data) {
+                self.getPositionBaiduSuccess(data.content);
+            },
+            error: function() {
+                self.getPositionBaiduSuccess();
+            }
+        });
+    },
+    getPositionBaiduSuccess: function(data) {
+        console.log(data);
+    },
+    renderContactList: function(data) {
+        var self = this,
+            html = '';
+        data.forEach(function(item) {
+            if (!item.tel) {
+                return false;
+            }
+            html += '<li>' +
+                '<div class="left">' +
+                '<div class="address">' +
+                '<div class="info">地址</div>' +
+                '<div class="elem"><p>' + item.address + '</p></div>' +
+                '</div>' +
+                '<div class="info">' +
+                '<div class="info-item">' +
+                '<div class="info">电话</div>' +
+                '<div class="elem">' + item.tel + '</div>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '<div class="right">' +
+                '<div class="btn-container"><div class="btn-span">' +
+                '<a class="js_call_nearby_line call-nearby-line" data-phone="' + item.tel + '" href="tel:' + item.tel + '">' +
+                '<img src="src/images/tel.jpg" class="ico_img"><div class="phone-tip">电话联系</div>' +
+                '</a>' +
+                '</div></div>' +
+                '</div>' +
+                '</li>';
+        });
+        return html;
+    },
+    getPosition: function() {
+        var self = this;
+        if (typeof WLAuth == 'object' && typeof WLAuth.config == 'function') {
+            self.getPositionBaidu();
+        } else {
+            var ua = window.navigator.userAgent.toLowerCase();
+            if (ua.match(/\sQQ/i) == " qq" && ua.match(/Android/i) == "android") {
+                var geolocation = new qq.maps.Geolocation("OXTBZ-UZMWP-DPCDX-VJWWU-JOG5Q-P5F36", "IOUShare");
+                geolocation.getLocation(function(position) {
+                    self.lng = position.lng;
+                    self.lat = position.lat;
+                    self.fetchData();
+                }, function() {
+                    self.fetchData();
+                }, { timeout: 15000 });
+            } else {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        self.lng = position.coords.longitude;
+                        self.lat = position.coords.latitude;
+                        self.fetchData();
+                    }, function(error) {
+                        self.fetchData();
+                    });
+                } else {
+                    self.fetchData();
+                }
+            }
+        }
+    }
+}
+
+$(function() {
+    var ua = window.navigator.userAgent.toLowerCase();
+    if (ua.match(/\sQQ/i) == " qq" && ua.match(/Android/i) == "android") {
+        ininQQMap();
+    }
+    window.App.init();
+});
+
     </script>
 </body>
 
