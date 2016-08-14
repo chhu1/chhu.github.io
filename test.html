@@ -39,7 +39,7 @@
             _timer = null;
         var Geolocation = function(key, referer) {
             geoIframe.setAttribute('id', geoIframeId);
-            geoIframe.setAttribute('src', 'http://apis.map.qq.com/tools/geolocation?key=' + key + '&referer=' + referer + '_js');
+            geoIframe.setAttribute('src', 'https://apis.map.qq.com/tools/geolocation?key=' + key + '&referer=' + referer + '_js');
             geoIframe.setAttribute('style', 'display: none; width: 100%; height: 30%');
             document.body.appendChild(geoIframe);
             window.addEventListener('message', function(event) {
