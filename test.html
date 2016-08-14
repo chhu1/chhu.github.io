@@ -137,7 +137,7 @@ window.App = {
                 geolocation.getLocation(function(position) {
                     self.lng = position.lng;
                     self.lat = position.lat;
-                    alert(position);
+                    alert(JSON.stringify(position));
                 }, function() {
                     alert('QQ定位失败');
                 }, { timeout: 15000 });
@@ -146,9 +146,9 @@ window.App = {
                     navigator.geolocation.getCurrentPosition(function(position) {
                         self.lng = position.coords.longitude;
                         self.lat = position.coords.latitude;
-                        alert(position);
+                        alert(JSON.stringify(position));
                     }, function(error) {
-                        alert(error);
+                        alert(JSON.stringify(error));
                     });
                 } else {
                     alert('不支持定位');
